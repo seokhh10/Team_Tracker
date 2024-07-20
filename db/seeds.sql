@@ -41,5 +41,5 @@ VALUES
     (8, 'Mario', 'Lugo', 6, 7),  --HR Coordinator                  8
     (9, 'Dario', 'Kerk', 7, null),  --Lead Accountant              9
     (10, 'Mike', 'Zuats', 8, 9),  --Accountant                      10
-    (11, 'Manuel', 'Hidalgo', 9, null),  --Regional Manager         11
+    (11, 'Manuel', 'Hidalgo', 9, null);  --Regional Manager         11
     

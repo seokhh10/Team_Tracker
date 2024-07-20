@@ -1,6 +1,12 @@
 DROP DATABASE IF EXISTS teamtracker_db;
 CREATE DATABASE teamtracker_db;
 
+\c teamtracker_db;
+
+DROP TABLE IF EXISTS department;
+DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS employee;
+
 CREATE TABLE department (
     id SERIAL PRIMARY KEY,
     name VARCHAR(30) UNIQUE NOT NULL
