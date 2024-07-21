@@ -90,3 +90,16 @@ function viewEmployee() {
         firstPrompt();
     });
 }
+
+// View Departments
+function viewDepartments() {
+    const query = "SELECT * FROM department";
+    pool.query(query, function (err, res) {
+        if (err) throw err;
+        console.log(`\nDEPARTMENTS:\n`);
+        res.rows.forEach((department) => {
+            console.log(`ID: ${department.id} | ${department.name} Department`);
+        });
+        firstPrompt();
+    });
+}
