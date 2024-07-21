@@ -15,13 +15,56 @@ firstPrompt();
 function firstPrompt() {
     inquirer.prompt(prompt.firstPrompt).then(function({ task }) {
         switch (task) {
+            //options by View
             case "View All Employees":
                 viewEmployee();
                 break;
-            // Add other cases as needed
-            default:
-                console.log('Invalid selection');
+            case "View Departments":
+                viewDepartments();
                 break;
+            case " View Roles":
+                viewRoles();
+                break;
+            case "View Employees by Department": //Bonus
+                viewEmployeeByDepartment();
+                break;
+            case "View Employees by Manager":   //Bonus
+				viewEmployeeByManager();
+				break;
+            case "View Department by Budget": //Bonus
+                viewDepartmentBudget();
+                break;
+            // Add options
+            case "Add Employee":
+                 addEmployee();
+                 break;
+            case "Add Department":
+                addDepartment();
+                break; 
+            case "Add Role":
+                addRole();
+                break;                       
+            // Update options
+            case "Update Employee Role":
+				updateEmployeeRole();
+				break; 
+			case "Update Employee Manager": //Bonus
+				updateEmployeeManager();
+				break;
+            // Delete options
+            case "Remove Employee":  //Bonus
+				deleteEmployee();
+				break;
+            case "Remove Department":   //Bonus
+                removeDepartment();
+                break;
+            case "Remove Role":  //Bonus
+                removeRole();
+                break;
+            case "Quit":
+                db.end();
+        console.log("Bye")
+                break;         
         }
     });
 }
