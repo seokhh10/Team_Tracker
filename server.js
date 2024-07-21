@@ -22,7 +22,7 @@ function firstPrompt() {
             case "View Departments":
                 viewDepartments();
                 break;
-            case " View Roles":
+            case "View Roles":
                 viewRoles();
                 break;
             case "View Employees by Department": //Bonus
@@ -100,6 +100,31 @@ function viewDepartments() {
         res.rows.forEach((department) => {
             console.log(`ID: ${department.id} | ${department.name} Department`);
         });
+        console.table(res.rows);
+
         firstPrompt();
     });
+}
+
+// View Roles
+function viewRoles() {
+    const query = "SELECT * FROM role";
+    pool.query(query, function (err, res) {
+        if (err) throw err;
+        console.log(`\nROLES:\n`);
+        res.rows.forEach((role) => {
+            console.log(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary}`,);
+        });
+        console.table(res.rows);
+
+
+        firstPrompt();
+    });
+}
+
+
+// View Employees by Department
+
+function viewEmployeeByDepartment() {
+    
 }
