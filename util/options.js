@@ -27,6 +27,16 @@ module.exports = {
         ],
     },
 
+//View Employees by Department
+departmentPrompt: (departmentOptions) => [
+	{
+		type: "list",
+		name: "departmentId",
+		message: "Which department do you what to see",
+		choices: departmentOptions,
+	},
+],
+
 };
 
 

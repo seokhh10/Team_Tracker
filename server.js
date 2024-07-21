@@ -126,5 +126,41 @@ function viewRoles() {
 // View Employees by Department
 
 function viewEmployeeByDepartment() {
-    
+    console.log("View employees by department\n");
+
+    const query = `SELECT d.id, d.name
+    FROM employee e
+    LEFT JOIN role r
+    ON e.role_id = r.id
+    LEFT JOIN department d
+    ON d.id = r.department_id
+    GROUP BY d.id, d.name`;
+
+    pool.query(query, function (err, res) {
+        if (err) throw err;
+
+    //Select Department
+    const departmentOptions = res.rows.map((data) => ({
+        value: data.id,
+        name: data.name,
+    }));    
+
+    inquirer
+       .prompt(prompt.departmentPrompt(departmentOptions))
+       .then(function (answer) {
+        const query = `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department 
+			FROM employee e
+			JOIN role r
+				ON e.role_id = r.id
+			JOIN department d
+			    ON d.id = r.department_id
+			WHERE d.id = $1`;
+
+            pool.query(query, [answer.departmentId], function (err,res) {
+                if (err) throw err;
+                console.table(res.rows);
+                firstPrompt();
+            });
+       });
+    });
 }
