@@ -224,60 +224,66 @@ function viewDepartmentBudget() {
         });
 }
 
-//Add Employee
-const addEmployee = () => {
-    //Select a Department for employee
-    let departmentArray = [];
-    pool.query(`SELECT * FROM department`, (err, res) => {
-        if (err) throw err;
-
-        res.rows.forEach((element) => {
-            departmentArray.push(`${element.id} ${element.name}`);
-        });
-    //Select employee's role    
-    let roleArray = [];
-    pool.query(`SELECT id, title FROM role`, (err, res) => {
-        if (err) throw err;
-
-        res.rows.forEach((element) => {
-            roleArray.push(`${element.id} ${element.title}`);
-        });
-    //Select employye's manager
-    let managerArray = [];
-    pool.query(`SELECT id, first_name, last_name FROM employee`, (err, res) => {
-        if (err) throw err;
-
-        res.rows.forEach((element) => {
-            managerArray.push(`${element.id} ${element.first_name} ${element.last_name}`,);
-        });
-
-        //Create a new employee
-        inquirer
-						.prompt(
-							prompt.insertEmployee(departmentArray, roleArray, managerArray),
-						)
-						.then((response) => {
-							// Insert chosen elements into employee array
-							let roleCode = parseInt(response.role);
-							let managerCode = parseInt(response.manager);
-                            pool.query(
-								"INSERT INTO employee SET ?",
-								{
-									first_name: response.firstName,
-									last_name: response.lastName,
-									role_id: roleCode,
-									manager_id: managerCode,
-								},
-                                (err, res) => {
-									if (err) throw err;
-									console.log("\n" + res.affectedRows + " employee created");
-									
-									viewEmployee();
-								},
-							);
-						});
-				},
-			);
-		});
-	});
-};
+//Add an Employee
+const addEmployee = async () => {
+    try {
+  
+      const rolesQuery = `SELECT r.id, r.title FROM role r`;
+      const rolesResult = await pool.query(rolesQuery);
+      const roles = rolesResult.rows;
+  
+      const rolesChoices = roles.map(role => ({
+        name: `${role.title}`,
+        value: role.id
+      }))
+  
+      const managersQuery = `SELECT e.id, e.first_name, e.last_name FROM employee e`;
+      const managersResult = await pool.query(managersQuery);
+      const managers = managersResult.rows;
+  
+      const managersChoices = managers.map(manager => ({
+        name: `${manager.first_name} ${manager.last_name}`,
+        value: manager.id
+      }));
+  
+      const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'first_name',
+          message: `What is the employee's first name?`,
+        },
+        {
+          type: 'input',
+          name: 'last_name',
+          message: `What is the employee's last name?`,
+        },
+        {
+          type: 'list',
+          name: 'role_id',
+          message: `What is the employee's role?`,
+          choices: rolesChoices,
+        },
+        {
+          type: 'list',
+          name: 'manager_id',
+          message: `Who is the employee's manager?`,
+          choices: managersChoices,
+        },
+      ]);
+  
+      const selectedRole = roles.find(role => role.id === role_id);
+      const selectedManager = managers.find(manager => manager.id === manager_id);
+  
+      //find the highest employee id and create the new employee with the the id+1
+      const maxIdQuery = 'SELECT MAX(id) as max_id FROM employee';
+      const maxIdResult = await pool.query(maxIdQuery);
+      const nextId = (maxIdResult.rows[0].max_id || 0) + 1;
+  
+      const query = 'INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+      const res = await pool.query(query, [nextId, first_name, last_name, role_id, manager_id]);
+      console.table(`Added ${first_name} ${last_name} with the role of ${selectedRole.title} reporting to ${selectedManager.first_name} ${selectedManager.last_name} to the database`)
+      promptUser();
+    } catch (err) {
+      console.error('Error adding Employee', err.message);
+    }
+  };

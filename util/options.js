@@ -66,7 +66,21 @@ insertEmployee: (departmentArray, roleArray, managerArray) => [
 		message: "Choose employee's department",
 		choices: departmentArray,
 	},
-]
+	//Employee's Role
+	{
+		name: "role",
+		type: "list",
+		message: "Choose employee's job position",
+		choices: roleArray,
+	},
+	//Employee's Manager
+	{
+		name: "manager",
+		type: "list",
+		message: "Choose the manager of this employee:",
+		choices: managerArray,
+	},
+],
 
 
 };
