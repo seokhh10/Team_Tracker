@@ -224,3 +224,55 @@ function viewDepartmentBudget() {
         });
 }
 
+//Add Employee
+const addEmployee = () => {
+    //Select a Department for employee
+    let departmentArray = [];
+    pool.query(`SELECT * FROM department`, (err, res) => {
+        if (err) throw err;
+
+        res.rows.forEach((element) => {
+            departmentArray.push(`${element.id} ${element.name}`);
+        });
+    //Select employee's role    
+    let roleArray = [];
+    pool.query(`SELECT id, title FROM role`, (err, res) => {
+        if (err) throw err;
+
+        res.rows.forEach((element) => {
+            roleArray.push(`${element.id} ${element.title}`);
+        });
+    //Select employye's manager
+    let managerArray = [];
+    pool.query(`SELECT id, first_name, last_name FROM employee`, (err, res) => {
+        if (err) throw err;
+
+        res.rows.forEach((element) => {
+            managerArray.push(`${element.id} ${element.first_name} ${element.last_name}`,);
+        });
+
+        //Create a new employee
+        inquirer
+            .prompt(prompt.newEmployee(departmentArray, roleArray, managerArray),)
+            .then((response) => {
+                let roleCode = parseInt(response.role);
+                let managerCode = parseInt(response.manager);
+                pool.query("Insert Into employee SET ?", 
+                    {
+                        first_name: response.firstName,
+					    last_name: response.lastName,
+					    role_id: roleCode,
+					    manager_id: managerCode,
+                    },
+                    (err. res) => {
+                        
+                    }
+
+            )
+            })
+
+    })    
+
+    })
+    })
+}
