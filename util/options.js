@@ -45,6 +45,28 @@ viewManagerPrompt: (managerOptions) => [
 		choices: managerOptions,
 	},
 ],
+//Options to add Employee
+insertEmployee: (departmentArray, roleArray, managerArray) => [
+	//Employee's First Name
+	{
+		name: "firstName",
+		type: "input",
+		message: "Enter employee's first name",
+	},
+	//Employee's Last Name
+	{
+		name: "lastName",
+		type: "input",
+		message: "Enter employee's last name:",
+	},
+	//Employee's Department
+	{
+		name: "department",
+		type: "list",
+		message: "Choose employee's department",
+		choices: departmentArray,
+	},
+]
 
 
 };

@@ -253,26 +253,31 @@ const addEmployee = () => {
 
         //Create a new employee
         inquirer
-            .prompt(prompt.newEmployee(departmentArray, roleArray, managerArray),)
-            .then((response) => {
-                let roleCode = parseInt(response.role);
-                let managerCode = parseInt(response.manager);
-                pool.query("Insert Into employee SET ?", 
-                    {
-                        first_name: response.firstName,
-					    last_name: response.lastName,
-					    role_id: roleCode,
-					    manager_id: managerCode,
-                    },
-                    (err. res) => {
-                        
-                    }
-
-            )
-            })
-
-    })    
-
-    })
-    })
-}
+						.prompt(
+							prompt.insertEmployee(departmentArray, roleArray, managerArray),
+						)
+						.then((response) => {
+							// Insert chosen elements into employee array
+							let roleCode = parseInt(response.role);
+							let managerCode = parseInt(response.manager);
+                            pool.query(
+								"INSERT INTO employee SET ?",
+								{
+									first_name: response.firstName,
+									last_name: response.lastName,
+									role_id: roleCode,
+									manager_id: managerCode,
+								},
+                                (err, res) => {
+									if (err) throw err;
+									console.log("\n" + res.affectedRows + " employee created");
+									
+									viewEmployee();
+								},
+							);
+						});
+				},
+			);
+		});
+	});
+};
