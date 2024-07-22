@@ -116,8 +116,6 @@ function viewRoles() {
             console.log(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary}`,);
         });
         console.table(res.rows);
-
-
         firstPrompt();
     });
 }
@@ -163,4 +161,45 @@ function viewEmployeeByDepartment() {
             });
        });
     });
+}
+
+// View Employee by Manager
+
+function viewEmployeeByManager() {
+    console.log("Manager Employees:\n");
+
+    const query = `SELECT e.manager_id, CONCAT(m.first_name, ' ', m.last_name) AS manager 
+    FROM employee e 
+    LEFT JOIN role r ON e.role_id = r.id
+  	LEFT JOIN department d ON d.id = r.department_id
+  	LEFT JOIN employee m ON m.id = e.manager_id 
+    GROUP BY e.manager_id, m.first_name, m.last_name`;
+
+    pool.query(query,function (err, res) {
+        if (err) throw err;
+
+        //Select Manager to see their employees
+        const managerOptions = res.rows.map((data) => ({
+            value: data.manager_id,
+            name: data.manager,
+        }));
+
+        inquirer
+            .prompt(prompt.viewManagerPrompt(managerOptions))
+            .then(function (answer) {
+                const query = `SELECT e.id, e.first_name, e.last_name, r.title, CONCAT(m.first_name, ' ', m.last_name) AS manager
+			FROM employee e
+			JOIN role r ON e.role_id = r.id
+			JOIN department d ON d.id = r.department_id
+			LEFT JOIN employee m ON m.id = e.manager_id
+			WHERE m.id = $1`;
+
+            pool.query(query, [answer.managerId], function (err,res){
+                if (err) throw err;
+                console.log(res.rows);
+                firstPrompt();
+            });
+        });
+    });
+
 }

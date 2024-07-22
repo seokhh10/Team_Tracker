@@ -36,6 +36,16 @@ departmentPrompt: (departmentOptions) => [
 		choices: departmentOptions,
 	},
 ],
+viewManagerPrompt: (managerOptions) => [
+	// Select Manager
+	{
+		type: "list",
+		name: "managerId",
+		message: "Which manager will you choose?",
+		choices: managerOptions,
+	},
+],
+
 
 };
 
