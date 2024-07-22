@@ -31,7 +31,7 @@ function firstPrompt() {
             case "View Employees by Manager":   //Bonus
 				viewEmployeeByManager();
 				break;
-            case "View Department by Budget": //Bonus
+            case "View Department Budget": //Bonus
                 viewDepartmentBudget();
                 break;
             // Add options
@@ -196,10 +196,31 @@ function viewEmployeeByManager() {
 
             pool.query(query, [answer.managerId], function (err,res){
                 if (err) throw err;
-                console.log(res.rows);
+                console.table(res.rows);
                 firstPrompt();
             });
         });
     });
 
 }
+
+//View Department Budget
+function viewDepartmentBudget() {
+    const query = `SELECT d.name, SUM(r.salary) AS budget
+		FROM employee e 
+		LEFT JOIN role r ON e.role_id = r.id
+		LEFT JOIN department d ON r.department_id = d.id
+		GROUP BY d.name`;
+
+        pool.query(query, function (err, res) {
+            if (err) throw err;
+
+            console.log(`\nDEPARTMENT BUDGET:\n`);
+            res.rows.forEach((department) => {
+                // console.log( `Department: ${department.name} Budget: ${department.budget}`,);
+            });
+            console.table(res.rows);
+            firstPrompt();
+        });
+}
+
