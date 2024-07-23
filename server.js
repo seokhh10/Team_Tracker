@@ -7,11 +7,8 @@ const db = require("./db/connections");
 //Options prompts
 const prompt = require("./util/options");
 
-// Call firstPrompt function after the module is loaded
 
-
-
-
+//Promp start here
 const promptUser = () => {
     return inquirer.prompt([
         {
@@ -373,4 +370,48 @@ const addRole = async () => {
     }
   };
 
+  //Update an Employee's role
+  const updateEmployeeRole = async() => {
+    try {
+        const employeesQuery = `SELECT e.id, e.first_name, e.last_name FROM employee e`;
+        const employeesResult =  await pool.query(employeesQuery);
+        const employees = employeesResult.rows;
+
+        const employeesChoices = employees.map(employee => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id
+        }));
+
+        const rolesQuery = `SELECT r.id, r.title FROM role r`;
+        const rolesResult = await pool.query(rolesQuery);
+        const roles = rolesResult.rows;
+
+        const rolesChoices = roles.map(role => ({
+            name: `${role.title}`,
+            value: role.id
+        }))
+
+        const { employee_id, role_id} = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employee_id',
+                message: `What employee would you like to update?`,
+                choices: employeesChoices,
+            },
+            {
+                type: 'list',
+                name: 'role_id',
+                message: `Select a new role for the update:`,
+                choices: rolesChoices,
+            },
+        ]);
+        
+        const selectedEmployee = employees.find(employee => employee.id === employee_id);
+        const selectedRole = roles.find(role => role.id === role_id);
+
+        const query = `UPDATE employee SET role_id = $2 WHERE id = $1`;
+        const res = await pool.query(query, [employee_id, role_id]);
+        console.log(`${selectedEmployee.first_name} ${selectedEmployee.last_name} updated to role ${selectedRole.title}`)
+    }
+  }
   promptUser();
