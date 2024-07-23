@@ -81,7 +81,7 @@ addEmployee: (departmentArray, roleArray, managerArray) => [
 		choices: managerArray,
 	},
 ],
-
+	//Delete employee
 deleteEmployee: (deleteEmployeeChoices) => {
 	return [
 		{
@@ -91,7 +91,30 @@ deleteEmployee: (deleteEmployeeChoices) => {
 			choices: deleteEmployeeChoices
 		}
 	];
-}
+},
+
+	//Delete department
+removeDepartmentPrompt: (removeDepartmentChoices) => [
+	// Select Department to delete
+	{
+		type: "list",
+		name: "departmentId",
+		message: "Which department do you want to delete?",
+		choices: removeDepartmentChoices,
+	},
+],
+
+// Remove role
+removeRolePrompt: (removeRoleChoices) => [
+	// Select Role to Remove
+	{
+		type: "list",
+		name: "roleId",
+		message: "Which role do you want to remove?",
+		choices: removeRoleChoices,
+	},
+],	
+
 };
 
 

@@ -449,5 +449,68 @@ const addRole = async () => {
 	});
 }
 
+    // Remove Department
+function removeDepartment() {
+	console.log("\nRemove a Department:\n");
+
+	var query = `SELECT e.id, e.name FROM department e`;
+
+	db.query(query, function (err, res) {
+		if (err) throw err;
+		// Select Department to Remove
+		const removeDepartmentChoices = res.rows.map(({ id, name }) => ({
+			value: id,
+			name: `${id} ${name}`,
+		}));
+
+		inquirer
+			.prompt(prompt.removeDepartmentPrompt(removeDepartmentChoices))
+			.then(function (answer) {
+				var query = `DELETE FROM department WHERE id = $1`;
+				// after prompting, remove item from the db
+				db.query(query, [answer.departmentId], function (
+					err,
+					res,
+				) {
+					if (err) throw err;
+
+					console.log("\n" + res.affectedRows + " department deleted");
+					
+					viewDepartments();
+				});
+			});
+	});
+}
+
+    // Remove role
+    function removeRole() {
+        console.log("Deleting a role");
+    
+        var query = `SELECT e.id, e.title, e.salary, e.department_id FROM role e`;
+    
+        db.query(query, function (err, res) {
+            if (err) throw err;
+            // Select Role to Remove
+            const removeRoleChoices = res.rows.map(({ id, title }) => ({
+                value: id,
+                name: `${id} ${title}`,
+            }));
+    
+            inquirer
+                .prompt(prompt.removeRolePrompt(removeRoleChoices))
+                .then(function (answer) {
+                    var query = `DELETE FROM role WHERE id = $1`;
+                    // after prompting, remove item from the db
+                    db.query(query,  [answer.roleId], function (err, res) {
+                        if (err) throw err;
+    
+                        console.log("\n" + res.affectedRows + " role deleted");
+                        
+                        viewRoles();
+                    });
+                });
+        });
+    }
+
 
   promptUser();
