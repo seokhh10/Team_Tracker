@@ -8,13 +8,20 @@ const db = require("./db/connections");
 const prompt = require("./util/options");
 
 // Call firstPrompt function after the module is loaded
-firstPrompt();
 
 
 
-function firstPrompt() {
-    inquirer.prompt(prompt.firstPrompt).then(function({ task }) {
-        switch (task) {
+
+const promptUser = () => {
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'prompt',
+            message: 'What would you like to do?',
+            choices: ['View All Employees','View Departments', 'View Roles', 'View Employees by Department', 'View Employees by Manager', 'View Department Budget', 'Add Employee', 'Add Department', 'Add Role', 'Update Employee Role', 'Update Employee Manager', 'Remove Employee', 'Remove Department', 'Remove Role', 'Quit' ], 
+        },
+    ]).then((answer) => {
+        switch (answer.prompt) {
             //options by View
             case "View All Employees":
                 viewEmployee();
@@ -64,10 +71,16 @@ function firstPrompt() {
             case "Quit":
                 db.end();
         console.log("Bye")
-                break;         
-        }
-    });
-}
+                break;  
+            default:
+                console.log('Please choose an option.');
+            }
+        }).catch((error) => {
+          console.error('Error during prompt:', error)
+        });
+      };           
+      
+
 
 
 // View Employees
@@ -87,7 +100,7 @@ function viewEmployee() {
 
         console.table(res.rows);
 
-        firstPrompt();
+        promptUser();
     });
 }
 
@@ -98,11 +111,11 @@ function viewDepartments() {
         if (err) throw err;
         console.log(`\nDEPARTMENTS:\n`);
         res.rows.forEach((department) => {
-            console.log(`ID: ${department.id} | ${department.name} Department`);
+            // console.log(`ID: ${department.id} | ${department.name} Department`);
         });
         console.table(res.rows);
 
-        firstPrompt();
+        promptUser();
     });
 }
 
@@ -113,10 +126,10 @@ function viewRoles() {
         if (err) throw err;
         console.log(`\nROLES:\n`);
         res.rows.forEach((role) => {
-            console.log(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary}`,);
+            // console.log(`ID: ${role.id} | Title: ${role.title} | Salary: ${role.salary}`,);
         });
         console.table(res.rows);
-        firstPrompt();
+        promptUser();
     });
 }
 
@@ -157,7 +170,7 @@ function viewEmployeeByDepartment() {
             pool.query(query, [answer.departmentId], function (err,res) {
                 if (err) throw err;
                 console.table(res.rows);
-                firstPrompt();
+                promptUser();
             });
        });
     });
@@ -197,7 +210,7 @@ function viewEmployeeByManager() {
             pool.query(query, [answer.managerId], function (err,res){
                 if (err) throw err;
                 console.table(res.rows);
-                firstPrompt();
+                promptUser();
             });
         });
     });
@@ -220,7 +233,7 @@ function viewDepartmentBudget() {
                 // console.log( `Department: ${department.name} Budget: ${department.budget}`,);
             });
             console.table(res.rows);
-            firstPrompt();
+            promptUser();
         });
 }
 
@@ -313,3 +326,51 @@ promptUser();
   }
 };
 
+// Add a Role
+const addRole = async () => {
+    try {
+  
+      const departmentsQuery = `SELECT d.id, d.name FROM department d`;
+      const departmentsResult = await pool.query(departmentsQuery);
+      const departments = departmentsResult.rows;
+  
+      const departmentChoices = departments.map(department => ({
+        name: `${department.name}`,
+        value: department.id
+      }))
+  
+      const { title, salary, department_id } = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'title',
+          message: 'What is the title of the role?'
+        },
+        {
+          type: 'input',
+          name: 'salary',
+          message: 'What is the salary for the role?'
+        },
+        {
+          type: 'list',
+          name: 'department_id',
+          message: 'What is the name of the department?',
+          choices: departmentChoices,
+        },
+      ]);
+  
+      const selectedDepartment = departments.find(department => department.id === department_id);
+  
+      const maxIdQuery = 'SELECT MAX(id) as max_id FROM role';
+      const maxIdResult = await pool.query(maxIdQuery);
+      const nextId = (maxIdResult.rows[0].max_id || 0) + 1;
+  
+      const query = 'INSERT INTO role (id, title, salary, department_id) VALUES ($1, $2, $3, $4) RETURNING *';
+      const res = await pool.query(query, [nextId, title, salary, department_id]);
+      console.log(`Added ${title} to the ${selectedDepartment.name} department in the database`);
+      promptUser();
+    } catch (err) {
+      console.error('Error adding Role', err);
+    }
+  };
+
+  promptUser();
