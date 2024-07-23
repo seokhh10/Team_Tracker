@@ -411,7 +411,43 @@ const addRole = async () => {
 
         const query = `UPDATE employee SET role_id = $2 WHERE id = $1`;
         const res = await pool.query(query, [employee_id, role_id]);
-        console.log(`${selectedEmployee.first_name} ${selectedEmployee.last_name} updated to role ${selectedRole.title}`)
-    }
-  }
+        console.log(`${selectedEmployee.first_name} ${selectedEmployee.last_name} updated to role ${selectedRole.title}`);
+        promptUser();
+    } catch (err) {
+        console.error('Error updating employee', err.message);
+    };
+  };
+
+  // Remove employee
+  function deleteEmployee() {
+	console.log("Deleting an employee");
+
+	const query = `SELECT e.id, e.first_name, e.last_name
+      FROM employee e`;
+
+	pool.query(query, function (err, res) {
+		if (err) throw err;
+		// Select Employee to remove
+		const deleteEmployeeChoices = res.rows.map(({ id, first_name, last_name }) => ({
+			value: id,
+			name: `${id} ${first_name} ${last_name}`,
+		}));
+
+		inquirer
+			.prompt(prompt.deleteEmployee(deleteEmployeeChoices))
+			.then(function (answer) {
+				const query = `DELETE FROM employee WHERE id = $1`;
+				// after prompting, remove item from the db
+				pool.query(query, [answer.employeeId], function (err, res) {
+					if (err) throw err;
+
+					console.log("\n" + res.rowCount + "  employee deleted");
+					
+					promptUser();
+				});
+			});
+	});
+}
+
+
   promptUser();

@@ -19,7 +19,7 @@ module.exports = {
 			"Update Employee Role", 
 			"Update Employee Manager",  //bonus
 			// Delete options
-			"Remove Employee",  //bonus
+			"Delete Employee",  //bonus
 			"Remove Department",  //bonus
 			"Remove Role", //bonus
 			"Quit",
@@ -82,6 +82,18 @@ addEmployee: (departmentArray, roleArray, managerArray) => [
 	},
 ],
 
+deleteEmployee: (deleteEmployeeChoices) => {
+	return [
+		{
+			type: 'list',
+			name: 'employeeId',
+			message: 'Which employee would you like to delete?',
+			choices: deleteEmployeeChoices
+		}
+	];
+}
 };
+
+
 
 
