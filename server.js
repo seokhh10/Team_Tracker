@@ -287,3 +287,29 @@ const addEmployee = async () => {
       console.error('Error adding Employee', err.message);
     }
   };
+
+  //Add a Department 
+const addDepartment = async () => {
+    try {
+        const { name } = await inquirer.prompt([
+            {
+                type: 'input',
+                name: 'name',
+                message: 'Enter the name of the department?',
+            },
+        ]);
+
+const maxIdQuery = 'SELECT MAX(id) AS max_id FROM department';
+const maxIdResult = await pool.query(maxIdQuery);
+const nextId = (maxIdResult.rows[0].max_id || 0) + 1;
+
+
+const query = `INSERT INTO department (id, name) VALUES ($1, $2) RETURNING *`;
+const res = await pool.query(query, [nextId, name]);
+console.log(`Added ${name} to the database`);
+promptUser();
+  } catch (err) {
+    console.error('Error adding Department', err);
+  }
+};
+

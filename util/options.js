@@ -45,8 +45,8 @@ viewManagerPrompt: (managerOptions) => [
 		choices: managerOptions,
 	},
 ],
-//Options to add Employee
-insertEmployee: (departmentArray, roleArray, managerArray) => [
+//Add Employee
+addEmployee: (departmentArray, roleArray, managerArray) => [
 	//Employee's First Name
 	{
 		name: "firstName",
@@ -81,7 +81,6 @@ insertEmployee: (departmentArray, roleArray, managerArray) => [
 		choices: managerArray,
 	},
 ],
-
 
 };
 
