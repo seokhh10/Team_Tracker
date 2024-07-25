@@ -81,6 +81,24 @@ addEmployee: (departmentArray, roleArray, managerArray) => [
 		choices: managerArray,
 	},
 ],
+
+//Update employeer's manager
+updateManager: (employees) => [
+	// Select Employee to Update
+	{
+		name: "update",
+		type: "list",
+		message: "Choose the employee whose manager is to be updated:",
+		choices: employees,
+	},
+	// Select Employee's New Manager
+	{
+		name: "manager",
+		type: "list",
+		message: "Choose employee's new manager",
+		choices: employees,
+	},
+],
 	//Delete employee
 deleteEmployee: (deleteEmployeeChoices) => {
 	return [

@@ -418,6 +418,45 @@ const addRole = async () => {
     };
   };
 
+// Update manager
+const updateEmployeeManager = () => {
+	// Select Employee to update
+	let employees = [];
+	pool.query(
+		`SELECT id, first_name, last_name
+  FROM employee`,
+        (err, res) => {
+            res.rows.forEach((element) => {
+            //for each ID and Name push into array
+            employees.push(
+                `${element.id} ${element.first_name} ${element.last_name}`,
+            );
+        });
+        //Select employee's new manager
+        inquirer.prompt(prompt.updateManager(employees)).then((answer) => {
+            let idCode = parseInt(answer.update);
+            let managerCode = parseInt(answer.manager);
+            pool.query(
+                // replace employee's mgr_ID with emp_ID of new manager
+					`UPDATE employee SET manager_id = ${managerCode} WHERE id = ${idCode}`,
+					(err, res) => {
+						if (err) throw err;
+
+						console.log(
+							"\n" + "\n" + [res.rows.affectedRows] + " Updated successfully!",
+						);
+                        promptUser();
+                    },
+            );
+        });
+        },
+    );
+};
+
+
+
+
+
   // Remove employee
   function deleteEmployee() {
 	console.log("Deleting an employee");

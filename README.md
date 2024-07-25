@@ -14,13 +14,19 @@ This command-line applicatio, utilizing PostgreSQL for its database management.
 This application is tailored for small businesses, providing a comprehensive solution for viewing and managing the company's organizational structure. Users can efficiently handle tasks such as overseeing departments, defining roles, and managing employee information, all through a series of straightforward commands. The app leverages SQL to perform robust data operations, ensuring accurate and efficient management of the company's resources.
 
 ## Features
-- **Landing Page**: A welcoming page with a link to the notes page.
-- **Notes Page**: Displays existing notes and fields to enter new notes.
-- **Save and Clear**: New notes can be saved and existing fields can be cleared.
-- **View and Edit**: Clicking on an existing note displays its details and allows for editing.
-- **New Note**: Easily start a new note with a click of a button.
-- **Delete Note**: Easily you can delete a existing note with a click of a button.
 
+- **View All Departments**: Displays a formatted table showing department names and department IDs.
+- **View All Roles**: Shows the job title, role ID, the department the role belongs to, and the salary for that role.
+- **View All Employees**: Presents a formatted table showing employee data, including employee IDs, first names, last names, job titles, departments, salaries, and managers that the employees report to.
+- **Add a Department**: Prompts the user to enter the name of a department and adds it to the database.
+- **Add a Role**: Prompts the user to enter the name, salary, and department for a role and adds it to the database.
+- **Add an Employee**: Prompts the user to enter the employee’s first name, last name, role, and manager, then adds the employee to the database.
+- **Update an Employee Role**: Allows the user to select an employee and update their role in the database.
+- **Update Employee Managers**: Provides the option to update the manager information for employees.
+- **View Employees by Manager**: Displays a list of employees organized by their managers.
+- **View Employees by Department**: Shows employees sorted by their respective departments.
+- **Delete Departments, Roles, and Employees**: Allows the removal of departments, roles, and employees from the database.
+- **View Total Utilized Budget of a Department**: Calculates and displays the combined salaries of all employees in a department.
 ## Installation and Usage
 To set up the Team_Tracker application locally, follow these steps:
 
@@ -42,11 +48,11 @@ To set up the Team_Tracker application locally, follow these steps:
 
 5. Open the Postgres Shell that connects the terminal to the Postgres instance: 
     ```sh
-  psql -U postgres
+    psql -U postgres
    
 6. Install console.table for better date format with: npm install console.table --save
 
-7. Run the app with: npm start;
+7. Run the app with: npm start
 
 8. Follow the menu and prompts
 
